@@ -1,0 +1,105 @@
+
+### **General Installation Instructions**
+
+#### **1. Preparation**
+
+- **Hardware Requirements:**
+  - A PC capable of running Unity and Meta Quest development.
+  - A Meta Quest device.
+
+- **Software Requirements:**
+  - **Unity Hub**: Download and install from [Unity's official website](https://unity.com/download).
+  - **Unity Editor**: Choose a version compatible with Oculus development (Unity 2020.3 LTS or later is recommended).
+  - **Android SDK & NDK Tools**: Installable via Unity Hub.
+  - **Oculus Integration Package**: Available from the Unity Asset Store.
+  - **Azure Account**: Sign up at the [Azure Portal](https://portal.azure.com/).
+
+#### **2. Install Unity and Necessary Modules**
+
+1. **Open Unity Hub**.
+2. **Go to the "Installs" tab** and click **"Add"**.
+3. **Select a Unity version** (e.g., Unity 2020.3 LTS).
+4. **In the "Add Modules" section**, choose:
+   - **Android Build Support**
+     - **SDK & NDK Tools**
+     - **OpenJDK**
+   - **Windows Build Support (IL2CPP)** (if you're using Windows).
+
+#### **3. Create a New Unity Project**
+
+1. In Unity Hub, go to the **"Projects"** tab and click **"New"**.
+2. Select the **"3D"** template.
+3. Name your project (e.g., **"SpeechEmotionAnalysisVR"**) and choose a save location.
+4. Click **"Create"**.
+
+#### **4. Import the Oculus Integration Package**
+
+1. Open your project in Unity.
+2. Go to the **Unity Asset Store** (Window > Asset Store).
+3. Search for **"Oculus Integration"**.
+4. Download and **import the package** into your project.
+
+#### **5. Configure Project Settings for Oculus Quest**
+
+1. Go to **Edit > Project Settings**.
+2. Select **"XR Plug-in Management"**.
+3. Under **"Plug-in Providers"**, check **"Oculus"** for both **PC, Mac & Linux Standalone** and **Android**.
+4. In **"Player"** settings, configure:
+   - **Company Name** and **Product Name**.
+   - **Other Settings**:
+     - **Minimum API Level**: Set to **Android 7.0 'Nougat' (API level 24)** or higher.
+     - **Scripting Backend**: Set to **IL2CPP**.
+     - **Target Architectures**: Select **ARM64** (required for Meta Quest).
+
+#### **6. Set Up Azure Cognitive Services**
+
+1. **Create Azure Resources**:
+   - **Speech Service**: For speech-to-text conversion.
+   - **Text Analytics**: For sentiment analysis.
+
+2. **Obtain API Keys and Endpoints**:
+   - In the Azure Portal, navigate to each service and copy the **API keys** and **endpoint URLs**.
+
+#### **7. Implement Microphone Input in Unity**
+
+1. **Create a C# script** (e.g., **"AudioRecorder.cs"**) to handle audio recording.
+2. Use Unity's **Microphone** class to capture audio input.
+3. **Use a utility script** (e.g., **"WavUtility.cs"**) to convert the **AudioClip** to WAV format.
+
+#### **8. Integrate Azure Speech-to-Text and Sentiment Analysis**
+
+1. **Implement methods** to:
+   - **Authenticate with Azure services** using API keys.
+   - **Send audio data** to the Azure Speech-to-Text API.
+   - **Parse API responses** to obtain transcribed text.
+   - **Send text** to the Azure Text Analytics API for sentiment analysis.
+   - **Process sentiment analysis responses** and update your application accordingly.
+
+#### **9. Update the Unity Application**
+
+1. **Add UI elements** (e.g., buttons) to start and stop recording.
+2. **Link UI elements** to methods in your **AudioRecorder** script.
+3. **Implement game logic** to respond to different sentiment results.
+
+#### **10. Build and Deploy to Meta Quest**
+
+1. **Enable Developer Mode** on your Meta Quest device.
+2. **Connect the device via USB** to your PC and accept any prompts to allow USB debugging.
+3. In Unity, go to **File > Build Settings**.
+   - Select **"Android"** and click **"Switch Platform"**.
+   - Add your scenes to the build.
+   - Click **"Build and Run"** to deploy the application to your Meta Quest device.
+
+#### **11. Test and Debug**
+
+1. **Test the application** on your Meta Quest device.
+2. **Use logs and debugging tools** to troubleshoot any issues.
+
+#### **12. Additional Considerations**
+
+- **Security**: Do not hardcode API keys in your code. Use secure methods to store and access sensitive information.
+- **Network Connectivity**: Ensure the device has internet access for Azure services to function properly.
+- **Privacy**: Inform users that their voice data will be sent to external services for processing.
+
+---
+
