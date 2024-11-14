@@ -21,6 +21,12 @@ public class AIBlendTreeController : MonoBehaviour
         _velocityZHash = Animator.StringToHash("Velocity Z");
     }
 
+    public void resetVelocity()
+    {
+        _animator.SetFloat(_velocityXHash, 0f);
+        _animator.SetFloat(_velocityZHash, 0f);
+    }
+
     // Update is called once per frame
     void Update()
     {
