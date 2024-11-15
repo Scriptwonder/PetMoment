@@ -185,7 +185,7 @@ namespace XRMultiplayer
             bool wasKinematic = m_Rigidbody.isKinematic;
             if (!m_Rigidbody.isKinematic)
             {
-                m_Rigidbody.velocity = Vector3.zero;
+                m_Rigidbody.linearVelocity = Vector3.zero;
                 m_Rigidbody.angularVelocity = Vector3.zero;
             }
             m_Rigidbody.interpolation = RigidbodyInterpolation.None;
@@ -265,7 +265,7 @@ namespace XRMultiplayer
                 m_IsInteracting.Value = baseInteractable.isSelected;
                 if (!baseInteractable.isSelected & !m_Rigidbody.isKinematic)
                 {
-                    m_Rigidbody.velocity = m_AverageVelocity;
+                    m_Rigidbody.linearVelocity = m_AverageVelocity;
                 }
             }
         }
@@ -300,7 +300,7 @@ namespace XRMultiplayer
         /// <returns>Returns true if this object is moving faster than the <see cref="m_MinExchangeVelocityMagitude"/> and the object we are hitting.</returns>
         protected bool IsMovingFaster(Rigidbody otherBody)
         {
-            return m_Rigidbody.velocity.magnitude > m_MinExchangeVelocityMagitude && m_Rigidbody.velocity.magnitude > otherBody.velocity.magnitude;
+            return m_Rigidbody.linearVelocity.magnitude > m_MinExchangeVelocityMagitude && m_Rigidbody.linearVelocity.magnitude > otherBody.linearVelocity.magnitude;
         }
 
         /// <summary>
@@ -326,7 +326,7 @@ namespace XRMultiplayer
             m_ClientNetworkTransform.enabled = false;
             if (!m_Rigidbody.isKinematic)
             {
-                m_Rigidbody.velocity = m_AverageVelocity;
+                m_Rigidbody.linearVelocity = m_AverageVelocity;
             }
             if (((XRGrabInteractable)baseInteractable).movementType != XRBaseInteractable.MovementType.Kinematic)
             {

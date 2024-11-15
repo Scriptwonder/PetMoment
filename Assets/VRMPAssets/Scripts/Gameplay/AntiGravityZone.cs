@@ -139,7 +139,7 @@ namespace XRMultiplayer
                 if (!rigidbody.isKinematic)
                 {
                     // If the rigidbody is not kinematic and it's Y velocity is under the threshold, apply a force to simulate floating.
-                    if (rigidbody.velocity.y < m_MaxObjectVelocityThreshold)
+                    if (rigidbody.linearVelocity.y < m_MaxObjectVelocityThreshold)
                     {
                         currentSpeed = Random.Range(m_FloatSpeedRange.x, m_FloatSpeedRange.y);
                         rigidbody.AddForce(Vector3.up * currentSpeed);

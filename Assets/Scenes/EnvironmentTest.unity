@@ -38,12 +38,12 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 12
+  serializedVersion: 13
+  m_BakeOnSceneLoad: 0
   m_GISettings:
     serializedVersion: 2
     m_BounceScale: 1
@@ -574,12 +574,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!1 &221093405
 GameObject:
   m_ObjectHideFlags: 0
@@ -1131,6 +1131,7 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1244,6 +1245,7 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1317,8 +1319,6 @@ GameObject:
   m_Component:
   - component: {fileID: 618998121}
   - component: {fileID: 618998120}
-  - component: {fileID: 618998119}
-  - component: {fileID: 618998118}
   m_Layer: 0
   m_Name: PetMoment
   m_TagString: Untagged
@@ -1326,36 +1326,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &618998118
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 618998117}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a73965cfb1f55945b69177e131a23f2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  predictionObject: {fileID: 618998119}
---- !u!114 &618998119
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 618998117}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fad379cc4debb1a499f5602b58c06cc3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  PositiveWordsFileText: SentimentDataTrained/positiveWordsStem
-  NegativeWordsFileText: SentimentDataTrained/negativeWordsStem
-  ContractionWordsFileText: SentimentDataTrained/contractionWords
-  StopWordsFileText: SentimentDataTrained/stopWords
-  SentimentValue: 0.5
 --- !u!114 &618998120
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1370,9 +1340,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   userPosition: {fileID: 955104363}
   speechRecognition: {fileID: 1901826931}
-  sentimentAnalysis: {fileID: 618998118}
+  sentimentAnalysis: {fileID: 1901826937}
   blendTreeAIController: {fileID: 0}
   navMeshAIController: {fileID: 0}
+  button: {fileID: 1535685727}
 --- !u!4 &618998121
 Transform:
   m_ObjectHideFlags: 0
@@ -1680,6 +1651,7 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1790,7 +1762,6 @@ CharacterController:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -2298,6 +2269,7 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -2607,7 +2579,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1535685728}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1901826937}
+        m_TargetAssemblyTypeName: SendTextToAnalyse, Assembly-CSharp
+        m_MethodName: SendPredictionText
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1535685728
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3039,8 +3023,12 @@ Light:
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
+  m_ForceVisible: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+  m_LightUnit: 1
+  m_LuxAtDistance: 1
+  m_EnableSpotReflector: 1
 --- !u!4 &1802515039 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5561621993495329126, guid: bacec74fc1a50ab4b81f616d3500c16f,
@@ -3125,6 +3113,8 @@ GameObject:
   - component: {fileID: 1901826933}
   - component: {fileID: 1901826932}
   - component: {fileID: 1901826931}
+  - component: {fileID: 1901826937}
+  - component: {fileID: 1901826936}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -3230,6 +3220,37 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1901826936
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1901826930}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fad379cc4debb1a499f5602b58c06cc3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PositiveWordsFileText: SentimentDataTrained/positiveWordsStem
+  NegativeWordsFileText: SentimentDataTrained/negativeWordsStem
+  ContractionWordsFileText: SentimentDataTrained/contractionWords
+  StopWordsFileText: SentimentDataTrained/stopWords
+  SentimentValue: 0.5
+--- !u!114 &1901826937
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1901826930}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a73965cfb1f55945b69177e131a23f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  predictionObject: {fileID: 1901826936}
+  input: 
 --- !u!4 &1910423436 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6008400370721536914, guid: bacec74fc1a50ab4b81f616d3500c16f,
@@ -3317,6 +3338,7 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -3424,6 +3446,7 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 public class PetManager : MonoBehaviour
 {
@@ -20,6 +21,9 @@ public class PetManager : MonoBehaviour
     private BlendTreeAIController blendTreeAIController;
     [SerializeField]
     private NavMeshAIController navMeshAIController;
+
+    [SerializeField]
+    private Button button;
 
     void Awake()
     {
@@ -47,11 +51,17 @@ public class PetManager : MonoBehaviour
         {
             speechRecognition.ButtonClick();
         }
+
+        if (Input.GetKeyDown(KeyCode.P)) {
+            button.onClick.Invoke();
+        }
     }
 
     public void PredictSentiment(string text)
     {
-        sentimentAnalysis.SendPredictionText(text);
+        sentimentAnalysis.input = text;
+        //sentimentAnalysis.SendPredictionText();
+        
     }
 
     public void triggerResponse(int response) {

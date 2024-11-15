@@ -20,6 +20,8 @@ public class SendTextToAnalyse : MonoBehaviour {
 
 	private bool responseFromThread = false;
 	private bool threadStarted = false;
+
+	public string input;
 	private Vector3 SentimentAnalysisResponse;
 
 	void OnEnable() 
@@ -41,10 +43,10 @@ public class SendTextToAnalyse : MonoBehaviour {
 		SentimentAnalysis.OnErrorOccurs -= Errors;
 	}
 
-	public void SendPredictionText(string text)
+	public void SendPredictionText()
 	{
 		// Thread-safe computations
-		predictionObject.PredictSentimentText(text);
+		predictionObject.PredictSentimentText(input);
 
 		if (!threadStarted)
 		{// Thread Started
