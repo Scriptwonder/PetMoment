@@ -377,7 +377,7 @@ Shader "Polytope Studio/PT_Water_Shader"
 				int _PassValue;
 			#endif
 
-			uniform float4 _CameraDepthTexture_TexelSize;
+			//uniform float4 _CameraDepthTexture_TexelSize;
 			sampler2D _NormalMapTexture;
 
 
@@ -1095,7 +1095,7 @@ Shader "Polytope Studio/PT_Water_Shader"
 				int _PassValue;
 			#endif
 
-			uniform float4 _CameraDepthTexture_TexelSize;
+			//uniform float4 _CameraDepthTexture_TexelSize;
 
 
 			float3 mod2D289( float3 x ) { return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0; }
@@ -1515,7 +1515,7 @@ Shader "Polytope Studio/PT_Water_Shader"
 				int _PassValue;
 			#endif
 
-			uniform float4 _CameraDepthTexture_TexelSize;
+			//uniform float4 _CameraDepthTexture_TexelSize;
 
 
 			float3 mod2D289( float3 x ) { return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0; }
@@ -1893,7 +1893,7 @@ Shader "Polytope Studio/PT_Water_Shader"
 				int _PassValue;
 			#endif
 
-			uniform float4 _CameraDepthTexture_TexelSize;
+			//uniform float4 _CameraDepthTexture_TexelSize;
 			sampler2D _NormalMapTexture;
 
 
@@ -2321,7 +2321,7 @@ Shader "Polytope Studio/PT_Water_Shader"
 				int _PassValue;
 			#endif
 
-			uniform float4 _CameraDepthTexture_TexelSize;
+			//uniform float4 _CameraDepthTexture_TexelSize;
 			sampler2D _NormalMapTexture;
 
 
@@ -2756,7 +2756,7 @@ Shader "Polytope Studio/PT_Water_Shader"
 				int _PassValue;
 			#endif
 
-			uniform float4 _CameraDepthTexture_TexelSize;
+			//uniform float4 _CameraDepthTexture_TexelSize;
 			sampler2D _NormalMapTexture;
 
 
@@ -3266,7 +3266,7 @@ Shader "Polytope Studio/PT_Water_Shader"
 				int _PassValue;
 			#endif
 
-			uniform float4 _CameraDepthTexture_TexelSize;
+			//uniform float4 _CameraDepthTexture_TexelSize;
 			sampler2D _NormalMapTexture;
 
 
@@ -3832,7 +3832,7 @@ Shader "Polytope Studio/PT_Water_Shader"
 				int _PassValue;
 			#endif
 
-			uniform float4 _CameraDepthTexture_TexelSize;
+			//uniform float4 _CameraDepthTexture_TexelSize;
 
 
 			float3 mod2D289( float3 x ) { return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0; }
@@ -4193,7 +4193,7 @@ Shader "Polytope Studio/PT_Water_Shader"
 				int _PassValue;
 			#endif
 
-			uniform float4 _CameraDepthTexture_TexelSize;
+			//uniform float4 _CameraDepthTexture_TexelSize;
 
 
 			float3 mod2D289( float3 x ) { return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0; }

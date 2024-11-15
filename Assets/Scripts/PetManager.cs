@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class PetManager : MonoBehaviour
 {
@@ -16,9 +17,9 @@ public class PetManager : MonoBehaviour
     public SendTextToAnalyse sentimentAnalysis;
 
     [SerializeField]
-    private AIBlendTreeController aiBlendTreeController;
+    private BlendTreeAIController blendTreeAIController;
     [SerializeField]
-    private AINavigationController aiNavigationController;
+    private NavMeshAIController navMeshAIController;
 
     void Awake()
     {
@@ -58,16 +59,16 @@ public class PetManager : MonoBehaviour
         {
             case 1:
                 Debug.Log("Positive Response");//good animation
-                aiBlendTreeController.resetVelocity();
+                blendTreeAIController.PositiveReaction();
                 //play animation
                 break;
             case 2:
                 Debug.Log("Neutral Response");//walking
-                aiNavigationController.destination = userPosition.transform;
+                navMeshAIController.destination = userPosition.transform;
                 break;
             case 3:
                 Debug.Log("Negative Response");//bad animation
-                aiBlendTreeController.resetVelocity();
+                blendTreeAIController.NegativeReaction();
                 //play animation
                 break;
             default:
