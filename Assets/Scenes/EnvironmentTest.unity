@@ -1319,6 +1319,7 @@ GameObject:
   m_Component:
   - component: {fileID: 618998121}
   - component: {fileID: 618998120}
+  - component: {fileID: 618998122}
   m_Layer: 0
   m_Name: PetMoment
   m_TagString: Untagged
@@ -1341,8 +1342,8 @@ MonoBehaviour:
   userPosition: {fileID: 955104363}
   speechRecognition: {fileID: 1901826931}
   sentimentAnalysis: {fileID: 1901826937}
-  blendTreeAIController: {fileID: 0}
-  navMeshAIController: {fileID: 0}
+  blendTreeAIController: {fileID: 271381285}
+  navMeshAIController: {fileID: 271381286}
   button: {fileID: 1535685727}
 --- !u!4 &618998121
 Transform:
@@ -1359,6 +1360,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &618998122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 618998117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 249b202a211890f4a8205efeb2d772cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentContext: 
+  labelsAsset: {fileID: 0}
 --- !u!1001 &642415326
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -7,6 +7,7 @@ using UnityEngine;
 
 // Unity 6 Only
 #if HAS_MPPM
+//#if UNITY_SERVER || UNITY_EDITOR
 using Unity.Multiplayer.Playmode;
 using UnityEngine.XR.Interaction.Toolkit.UI;
 #endif

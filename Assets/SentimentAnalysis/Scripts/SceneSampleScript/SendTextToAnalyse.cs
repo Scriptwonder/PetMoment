@@ -93,7 +93,7 @@ public class SendTextToAnalyse : MonoBehaviour {
 		{
 			response = 3;
 		}
-		PetManager.instance.triggerResponse(response);
+		//PetManager.instance.triggerResponse(response);
 	}
 
 	private void PrintAnalysis()

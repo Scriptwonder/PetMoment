@@ -5,8 +5,10 @@
 // <code>
 using UnityEngine;
 using UnityEngine.UI;
+using System.Threading;
 using TMPro;
 using Microsoft.CognitiveServices.Speech;
+using Utilities.Async.AwaitYieldInstructions;
 #if PLATFORM_ANDROID
 using UnityEngine.Android;
 #endif
@@ -21,9 +23,13 @@ public class SpeechRecognition : MonoBehaviour
     public TMP_Text outputText;
     public Button startRecoButton;
 
+    [SerializeField] private PetManager PetManager;
+
     private object threadLocker = new object();
     private bool waitingForReco;
     private string message;
+
+    private bool resultCorrect = false;
 
     private bool micPermissionGranted = false;
 
@@ -57,14 +63,15 @@ public class SpeechRecognition : MonoBehaviour
             // Note: Since RecognizeOnceAsync() returns only a single utterance, it is suitable only for single
             // shot recognition like command or query.
             // For long-running multi-utterance recognition, use StartContinuousRecognitionAsync() instead.
-            var result = await recognizer.RecognizeOnceAsync().ConfigureAwait(false);
+            var result = await recognizer.RecognizeOnceAsync();//.ConfigureAwait(false);
 
             // Checks result.
             string newMessage = string.Empty;
             if (result.Reason == ResultReason.RecognizedSpeech)
             {
                 newMessage = result.Text;
-                PetManager.instance.PredictSentiment(newMessage);
+                //PetManager.instance.PredictSentiment(newMessage);
+                resultCorrect = true;
                 
             }
             else if (result.Reason == ResultReason.NoMatch)
@@ -82,6 +89,13 @@ public class SpeechRecognition : MonoBehaviour
                 message = newMessage;
                 waitingForReco = false;
             }
+
+            if (resultCorrect) {
+                //UnityMainThreadDispatcher.Instance().Enqueue(() => {
+                    PetManager.SendTextToAnalyse(newMessage);
+                //});
+                resultCorrect = false;
+            }
         }
     }
 
@@ -91,11 +105,11 @@ public class SpeechRecognition : MonoBehaviour
         {
             UnityEngine.Debug.LogError("outputText property is null! Assign a UI Text element to it.");
         }
-        else if (startRecoButton == null)
-        {
-            message = "startRecoButton property is null! Assign a UI Button to it.";
-            UnityEngine.Debug.LogError(message);
-        }
+        // else if (startRecoButton == null)
+        // {
+        //     message = "startRecoButton property is null! Assign a UI Button to it.";
+        //     UnityEngine.Debug.LogError(message);
+        // }
         else
         {
             // Continue with normal initialization, Text and Button objects are present.

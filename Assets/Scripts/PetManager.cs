@@ -1,13 +1,21 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using Utilities.Async.AwaitYieldInstructions;
 
-public class PetManager : MonoBehaviour
+public class PetManager : NetworkBehaviour
 {
-    public static PetManager instance;
+    //public static PetManager instance;
+    private readonly Dictionary<int, Action> responseActions = new Dictionary<int, Action> {
+         //1. Idle, 2.Happy, 3.Upset, 4.Angry, 5.Shock, 6.Dance, 7.Clapping
+        //{1, () => blendTreeAIController.PositiveReaction()},
+        
+    };
 
     [SerializeField]
     private GameObject userPosition;
@@ -15,32 +23,31 @@ public class PetManager : MonoBehaviour
     [SerializeField]
     private SpeechRecognition speechRecognition;
 
-    public SendTextToAnalyse sentimentAnalysis;
+    private int NetworkID;
 
-    [SerializeField]
-    private BlendTreeAIController blendTreeAIController;
-    [SerializeField]
-    private NavMeshAIController navMeshAIController;
+    //public SendTextToAnalyse sentimentAnalysis;
 
-    [SerializeField]
-    private Button button;
+    // [SerializeField]
+    // private BlendTreeAIController blendTreeAIController;
+    // [SerializeField]
+    // private NavMeshAIController navMeshAIController;
 
     void Awake()
     {
-       if (instance == null)
-       {
-           instance = this;
-       }
-       else if (instance != this)
-       {
-           Destroy(gameObject);
-       } 
+    //    if (instance == null)
+    //    {
+    //        instance = this;
+    //    }
+    //    else if (instance != this)
+    //    {
+    //        Destroy(gameObject);
+    //    } 
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        NetworkID = (int)NetworkManager.Singleton.LocalClientId;
     }
 
     // Update is called once per frame
@@ -51,39 +58,94 @@ public class PetManager : MonoBehaviour
         {
             speechRecognition.ButtonClick();
         }
-
-        if (Input.GetKeyDown(KeyCode.P)) {
-            button.onClick.Invoke();
-        }
     }
 
-    public void PredictSentiment(string text)
+    public void ButtonClick()
     {
-        sentimentAnalysis.input = text;
-        //sentimentAnalysis.SendPredictionText();
-        
+        //Debug.Log("Button Clicked");
+        speechRecognition.ButtonClick();
     }
 
-    public void triggerResponse(int response) {
-        switch (response)
+    
+
+    public void SendTextToAnalyse(string text)
+    {
+        //Debug.Log(IsLocalPlayer);
+        if (IsLocalPlayer) {
+            SubmitTextServerRpc(text);
+        }
+    }//client send each input to the server
+
+    [ServerRpc]
+    public void SubmitTextServerRpc(string text)
+    {
+        text = "Speaker " + NetworkManager.Singleton.LocalClientId + ": " + text;
+        //Debug.Log("Text Submitted: " + text);
+        LLManager.Instance.AddMessage(text);
+    }
+
+
+    [ServerRpc]
+    public void AnalyzeAnimationServerRpc(string text)
+    {
+        Debug.Log("Analyzing Text: " + text);
+        if (int.TryParse(text[0].ToString(), out int response))
         {
-            case 1:
-                Debug.Log("Positive Response");//good animation
-                blendTreeAIController.PositiveReaction();
-                //play animation
-                break;
-            case 2:
-                Debug.Log("Neutral Response");//walking
-                navMeshAIController.destination = userPosition.transform;
-                break;
-            case 3:
-                Debug.Log("Negative Response");//bad animation
-                blendTreeAIController.NegativeReaction();
-                //play animation
-                break;
-            default:
-                Debug.Log("Invalid Response");
-                break;
+            TriggerResponse(response);
+            BroadcastAnimationClientRpc(response);
+        }
+        else
+        {
+            Debug.LogError("Invalid response format.");
         }
     }
+
+    [ClientRpc]
+    private void BroadcastAnimationClientRpc(int response)
+    {
+        TriggerResponse(response);
+    }
+
+    public void TriggerResponse(int response)
+    {
+        //1. Idle, 2.Happy, 3.Upset, 4.Angry, 5.Shock, 6.Dance, 7.Clapping
+        if (responseActions.TryGetValue(response, out var action))
+        {
+            action.Invoke();
+        }
+        else
+        {
+            Debug.Log("Invalid Response");
+        }
+    }
+
+    // public void PredictSentiment(string text)
+    // {
+    //     sentimentAnalysis.input = text;
+    //     //sentimentAnalysis.SendPredictionText();
+        
+    // }
+
+    // public void triggerResponse(int response) {
+    //     switch (response)
+    //     {
+    //         case 1:
+    //             Debug.Log("Positive Response");//good animation
+    //             blendTreeAIController.PositiveReaction();
+    //             //play animation
+    //             break;
+    //         case 2:
+    //             Debug.Log("Neutral Response");//walking
+    //             navMeshAIController.destination = userPosition.transform;
+    //             break;
+    //         case 3:
+    //             Debug.Log("Negative Response");//bad animation
+    //             blendTreeAIController.NegativeReaction();
+    //             //play animation
+    //             break;
+    //         default:
+    //             Debug.Log("Invalid Response");
+    //             break;
+    //     }
+    // }
 }
