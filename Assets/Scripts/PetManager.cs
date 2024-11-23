@@ -25,6 +25,12 @@ public class PetManager : NetworkBehaviour
 
     private int NetworkID;
 
+    [SerializeField]
+    private TMPro.TMP_Text textDisplay;
+
+    [SerializeField]
+    private Button summarizeButton;
+
     //public SendTextToAnalyse sentimentAnalysis;
 
     // [SerializeField]
@@ -48,6 +54,12 @@ public class PetManager : NetworkBehaviour
     void Start()
     {
         NetworkID = (int)NetworkManager.Singleton.LocalClientId;
+        if (summarizeButton)
+        {
+            summarizeButton.onClick.AddListener(() => {
+                LLManager.Instance.ConcludeMessage();
+            });
+        }
     }
 
     // Update is called once per frame
@@ -82,6 +94,20 @@ public class PetManager : NetworkBehaviour
         text = "Speaker " + NetworkManager.Singleton.LocalClientId + ": " + text;
         //Debug.Log("Text Submitted: " + text);
         LLManager.Instance.AddMessage(text);
+    }
+
+    [ServerRpc]
+    public void SummaryTextServerRpc(string text)
+    {
+        //Debug.Log("Text Submitted: " + text);
+        if (textDisplay) textDisplay.text = text;
+        BroadCastSummaryClientRpc(text);
+    }
+
+    [ClientRpc]
+    private void BroadCastSummaryClientRpc(string text)
+    {
+        if (textDisplay) textDisplay.text = text;
     }
 
 

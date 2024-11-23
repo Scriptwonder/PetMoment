@@ -80,6 +80,7 @@ public class LLManager : NetworkBehaviour
     void Start()
     {
         Setup();
+
     }
 
     void Update()
@@ -166,7 +167,6 @@ public class LLManager : NetworkBehaviour
 
     public void StartNewMessage() {
         messages.Clear();
-        
     }
 
     public bool FindLabelIndex(string labelIndex) {
@@ -179,5 +179,11 @@ public class LLManager : NetworkBehaviour
             }
         }
         return false;
+    }
+
+    public async void ConcludeMessage() {
+        InputMessage("Based on our previous history, give a detailed summary of the conversation and its team dynamics.");
+        await SendMessage();
+        petManager.SummaryTextServerRpc(outputMessages.Last().ToString());
     }
 }
