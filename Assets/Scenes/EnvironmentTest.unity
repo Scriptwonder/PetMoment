@@ -1032,7 +1032,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 271381279}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f7e5d0103fe562444a34d2aea1597edd, type: 3}
   m_Name: 
@@ -1046,7 +1046,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 271381279}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ef2e5fe7fe60f5347a9e25f2aef8e8fd, type: 3}
   m_Name: 
@@ -1339,12 +1339,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d96f8549e620944b82e319ba5814e0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  blendTreeAIController: {fileID: 271381285}
   userPosition: {fileID: 955104363}
   speechRecognition: {fileID: 1901826931}
-  sentimentAnalysis: {fileID: 1901826937}
-  blendTreeAIController: {fileID: 271381285}
-  navMeshAIController: {fileID: 271381286}
-  button: {fileID: 1535685727}
+  textDisplay: {fileID: 0}
+  summarizeButton: {fileID: 0}
 --- !u!4 &618998121
 Transform:
   m_ObjectHideFlags: 0
@@ -1372,8 +1372,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 249b202a211890f4a8205efeb2d772cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  petManager: {fileID: 618998120}
   currentContext: 
-  labelsAsset: {fileID: 0}
 --- !u!1001 &642415326
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3151,6 +3152,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   outputText: {fileID: 221093406}
   startRecoButton: {fileID: 1535685727}
+  PetManager: {fileID: 0}
 --- !u!114 &1901826932
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3505,9 +3507,9 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 77827527}
   - {fileID: 955104364}
   - {fileID: 750203640}
   - {fileID: 1901826935}
   - {fileID: 618998121}
   - {fileID: 1570710390}
+  - {fileID: 77827527}

@@ -833,7 +833,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2222921545
+  GlobalObjectIdHash: 1009440623
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -910,8 +910,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  animatorAIController: {fileID: 0}
   userPosition: {fileID: 1146504769571228214}
   speechRecognition: {fileID: 7259154911411945189}
+  textDisplay: {fileID: 0}
+  summarizeButton: {fileID: 0}
 --- !u!114 &586900413570767782
 MonoBehaviour:
   m_ObjectHideFlags: 0

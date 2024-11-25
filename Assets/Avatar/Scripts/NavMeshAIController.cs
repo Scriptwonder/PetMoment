@@ -4,16 +4,21 @@ using UnityEngine.AI;
 public class NavMeshAIController : MonoBehaviour
 {
     public Transform destination;
-    
+
     [SerializeField]
     private float stoppingOffset = 5.0f;
-    
+
     private NavMeshAgent _agent;
     private Animator _animator;
-    
-    private static readonly int IsJumpingHash = Animator.StringToHash("isJumping");
-    private static readonly int IsLayingHash = Animator.StringToHash("isLaying");
-    private static readonly int IsGettingUpHash = Animator.StringToHash("isUp");
+
+    // Animator state names
+    private const string FlipStateName = "Flip";
+    private const string LayingDownStateName = "Laying Down";
+    private const string GettingUpStateName = "Getting Up";
+    private const string SurprisedStateName = "Surprised";
+    private const string AngryStateName = "Angry";
+    private const string DancingStateName = "Dancing";
+    private const string ClappingStateName = "Clapping";
 
     void Start()
     {
@@ -30,9 +35,7 @@ public class NavMeshAIController : MonoBehaviour
         _agent.destination = destination.position;
 
         // Check if the character is performing animations that should stop movement
-        bool isPerformingAction = _animator.GetBool(IsJumpingHash) ||
-                                  _animator.GetBool(IsLayingHash) ||
-                                  _animator.GetBool(IsGettingUpHash);
+        bool isPerformingAction = IsAnyActionActive();
 
         // Determine whether to stop the agent
         if (isPerformingAction || IsNearDestination())
@@ -44,7 +47,24 @@ public class NavMeshAIController : MonoBehaviour
             _agent.isStopped = false; // Resume NavMeshAgent
         }
     }
-    
+
+    /// <summary>
+    /// Checks if any action is currently active based on Animator states.
+    /// </summary>
+    private bool IsAnyActionActive()
+    {
+        return _animator.GetCurrentAnimatorStateInfo(0).IsName(FlipStateName) ||
+               _animator.GetCurrentAnimatorStateInfo(0).IsName(LayingDownStateName) ||
+               _animator.GetCurrentAnimatorStateInfo(0).IsName(GettingUpStateName) ||
+               _animator.GetCurrentAnimatorStateInfo(0).IsName(SurprisedStateName) ||
+               _animator.GetCurrentAnimatorStateInfo(0).IsName(AngryStateName) ||
+               _animator.GetCurrentAnimatorStateInfo(0).IsName(DancingStateName) ||
+               _animator.GetCurrentAnimatorStateInfo(0).IsName(ClappingStateName);
+    }
+
+    /// <summary>
+    /// Determines if the agent is near the destination.
+    /// </summary>
     private bool IsNearDestination()
     {
         if (_agent.pathPending)

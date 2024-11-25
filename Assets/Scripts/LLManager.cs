@@ -112,13 +112,13 @@ public class LLManager : NetworkBehaviour
         InputMessage("You should output the current action that should be done by you, which is to intervene or not, and the reason for your decision.");
         InputMessage("You will be given several options of the interaction to choose from, and it is based on Thomas-Kilmann Conflict Management Model. here are the options:");
         //given the option:
-        InputMessage("1. Idle: Do nothing, let the conversation continue.");
+        InputMessage("1. Default: Do nothing, let the conversation continue.");
         InputMessage("2. Happy: Based on the conversation, you are happy with the current conversation and you want to continue.");
         InputMessage("3. Upset: Based on the conversation, you are upset with the current situation and show your upset to the group.");
         InputMessage("4. Angry: Based on the conversation, you are angry with the current situation and show your anger to the group.");
-        InputMessage("5. Shock: Based on the conversation, you are shocked and stumbled.");
-        InputMessage("6. Dance: Based on the conversation, you are happy and want to dance.(Team Dynamics go pretty well)");
-        InputMessage("7. Clapping: Based on the conversation, you are happy and want to clap.(Team Dynamics go pretty well)");
+        InputMessage("5. Surprised: Based on the conversation, you are shocked and stumbled.");
+        InputMessage("6. Cheerful: Based on the conversation, you are happy and want to dance.(Team Dynamics go pretty well)");
+        InputMessage("7. Supportive: Based on the conversation, you are happy and want to clap.(Team Dynamics go pretty well)");
         InputMessage("Given these options, select the best one that would fit to act at this current bucket of time.");
         InputMessage("In the following answers, you should always given the answer with only a number at the first letter, and the reason for your decision at the second index.");
         await SendMessage();

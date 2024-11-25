@@ -10,12 +10,19 @@ using Utilities.Async.AwaitYieldInstructions;
 
 public class PetManager : NetworkBehaviour
 {
+    
+    [FormerlySerializedAs("blendTreeAIController")] [SerializeField]
+    private AnimatorAIController animatorAIController;
+    private Dictionary<int, Action> responseActions;
+    
     //public static PetManager instance;
-    private readonly Dictionary<int, Action> responseActions = new Dictionary<int, Action> {
+    /*
+     private readonly Dictionary<int, Action> responseActions = new Dictionary<int, Action> {
          //1. Idle, 2.Happy, 3.Upset, 4.Angry, 5.Shock, 6.Dance, 7.Clapping
         //{1, () => blendTreeAIController.PositiveReaction()},
         
     };
+    */
 
     [SerializeField]
     private GameObject userPosition;
@@ -53,6 +60,19 @@ public class PetManager : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        animatorAIController = GetComponent<AnimatorAIController>();
+        responseActions = new Dictionary<int, Action>
+        {
+            //1. Idle, 2.Happy, 3.Upset, 4.Angry, 5.Surprised, 6.Cheerful, 7.Supportive
+            { 1, () => animatorAIController.Default() },
+            { 2, () => animatorAIController.Happy() },
+            { 3, () => animatorAIController.Upset() },
+            { 4, () => animatorAIController.Angry() },
+            { 5, () => animatorAIController.Surprised() },
+            { 6, () => animatorAIController.Cheerful() },
+            { 7, () => animatorAIController.Supportive() },
+        };
+        
         NetworkID = (int)NetworkManager.Singleton.LocalClientId;
         if (summarizeButton)
         {
