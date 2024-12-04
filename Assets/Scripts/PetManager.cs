@@ -60,7 +60,9 @@ public class PetManager : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        animatorAIController = GetComponent<AnimatorAIController>();
+        //Find the component in scene that is called "Pet"
+        var Pet = GameObject.Find("Pet");
+        animatorAIController = Pet.GetComponent<AnimatorAIController>();
         responseActions = new Dictionary<int, Action>
         {
             //1. Idle, 2.Happy, 3.Upset, 4.Angry, 5.Surprised, 6.Cheerful, 7.Supportive
@@ -90,6 +92,9 @@ public class PetManager : NetworkBehaviour
         {
             speechRecognition.ButtonClick();
         }
+        if (Input.GetKeyDown(KeyCode.S)) {
+            LLManager.Instance.ConcludeMessage();
+        }
     }
 
     public void ButtonClick()
@@ -112,7 +117,7 @@ public class PetManager : NetworkBehaviour
     public void SubmitTextServerRpc(string text)
     {
         text = "Speaker " + NetworkManager.Singleton.LocalClientId + ": " + text;
-        //Debug.Log("Text Submitted: " + text);
+        Debug.Log("Text Submitted: " + text);
         LLManager.Instance.AddMessage(text);
     }
 
@@ -157,6 +162,7 @@ public class PetManager : NetworkBehaviour
         //1. Idle, 2.Happy, 3.Upset, 4.Angry, 5.Shock, 6.Dance, 7.Clapping
         if (responseActions.TryGetValue(response, out var action))
         {
+            Debug.Log("Triggering Response: " + response);
             action.Invoke();
         }
         else

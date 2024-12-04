@@ -16,6 +16,7 @@ public class AnimatorAIController : MonoBehaviour
     private float _strafeSpeed = 0.35f;
     private float _dampingTime = 0.1f;
 
+    [SerializeField]
     private Animator _animator;
     private NavMeshAgent _agent;
     private AnimatorStateInfo _currentState;

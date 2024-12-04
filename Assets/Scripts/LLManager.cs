@@ -64,7 +64,6 @@ public class LLManager : NetworkBehaviour
     private void Awake()
     {
         //var authToken = await LoginAsync();
-        //auth = new OpenAIAuthentication("yourownkey");
         if (instance == null)
         {
             instance = this;

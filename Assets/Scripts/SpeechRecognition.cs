@@ -89,7 +89,7 @@ public class SpeechRecognition : MonoBehaviour
                 message = newMessage;
                 waitingForReco = false;
             }
-
+            
             if (resultCorrect) {
                 //UnityMainThreadDispatcher.Instance().Enqueue(() => {
                     PetManager.SendTextToAnalyse(newMessage);
