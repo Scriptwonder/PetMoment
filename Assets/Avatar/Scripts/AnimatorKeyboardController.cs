@@ -9,6 +9,12 @@ public class AnimatorKeyboardController : MonoBehaviour
     [SerializeField] private EmotionController emotionController;
     [SerializeField] private Rig headRig;
     [SerializeField] private float clapDuration = 5.0f;
+    
+    // Added variables for animation smoothing
+    [SerializeField] private Transform destination;
+    private float _rotationSpeed = 1f;
+    private float _strafeSpeed = 0.35f;
+    private float _dampingTime = 0.1f;
 
     private Animator _animator;
     private NavMeshAgent _agent;
@@ -34,8 +40,7 @@ public class AnimatorKeyboardController : MonoBehaviour
     private const string FlipStateName = "Flip";
 
     private Coroutine _clappingCoroutine;
-
-    // Enum for emotion types
+    
     private enum EmotionType
     {
         Happy,
@@ -56,6 +61,7 @@ public class AnimatorKeyboardController : MonoBehaviour
         { KeyCode.V, EmotionType.Cheerful },
         { KeyCode.B, EmotionType.Angry },
     };
+    
 
     void Start()
     {
@@ -71,6 +77,22 @@ public class AnimatorKeyboardController : MonoBehaviour
         if (headRig == null)
         {
             headRig = GetComponentInChildren<Rig>();
+        }
+
+        // Disable automatic rotation of NavMeshAgent
+        if (_agent != null)
+        {
+            _agent.updateRotation = false;
+        }
+
+        // Assign destination if not set
+        if (destination == null)
+        {
+            NavMeshAIController aiController = GetComponent<NavMeshAIController>();
+            if (aiController != null)
+            {
+                destination = aiController.destination;
+            }
         }
     }
 
@@ -113,13 +135,13 @@ public class AnimatorKeyboardController : MonoBehaviour
                 emotionController.Default();
             }
         }
-        //Special: Exit time = 0.6
-        else if (_currentState.IsName(FlipStateName) && _currentState.normalizedTime >= 0.58 && !_animator.IsInTransition(0))
+        // Special: Exit time = 0.6
+        else if (_currentState.IsName(FlipStateName) && _currentState.normalizedTime >= 0.58f && !_animator.IsInTransition(0))
         {
             emotionController.Default();
         }
         // Other emotions
-        else if (_currentState.normalizedTime >= 0.9 && !_animator.IsInTransition(0))
+        else if (_currentState.normalizedTime >= 0.9f && !_animator.IsInTransition(0))
         {
             if (_currentState.IsName(DancingStateName))
             {
@@ -185,11 +207,47 @@ public class AnimatorKeyboardController : MonoBehaviour
 
     private void UpdateBlendTree(bool isPerformingAction)
     {
+        //float dampingTime = 0.1f; // Smooth transitions
+        float velocityThreshold = 0.05f; // Threshold to prevent twitching
+
         if (_agent != null && !_agent.isStopped && _agent.remainingDistance > _agent.stoppingDistance && !isPerformingAction)
         {
             Vector3 localVelocity = transform.InverseTransformDirection(_agent.velocity);
-            _animator.SetFloat(VelocityXHash, localVelocity.x);
-            _animator.SetFloat(VelocityZHash, localVelocity.z);
+
+            Vector3 directionToTarget = destination.position - transform.position;
+            float angleToTarget = Vector3.Angle(transform.forward, directionToTarget);
+
+            float angleThreshold = 100f; // Angle to determine if target is behind
+
+            if (angleToTarget > angleThreshold)
+            {
+                // Strafe to turn towards the target
+                Vector3 cross = Vector3.Cross(transform.forward, directionToTarget.normalized);
+                float direction = cross.y > 0 ? 1f : -1f; // 1 for right, -1 for left
+
+                _animator.SetFloat(VelocityXHash, direction * _strafeSpeed, _dampingTime, Time.deltaTime);
+                _animator.SetFloat(VelocityZHash, 0f, _dampingTime, Time.deltaTime);
+
+                // Rotate the character
+                Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * _rotationSpeed);
+            }
+            else
+            {
+                // Apply threshold to prevent twitching
+                float velocityX = Mathf.Abs(localVelocity.x) > velocityThreshold ? localVelocity.x : 0f;
+                float velocityZ = Mathf.Abs(localVelocity.z) > velocityThreshold ? localVelocity.z : 0f;
+
+                _animator.SetFloat(VelocityXHash, velocityX, _dampingTime, Time.deltaTime);
+                _animator.SetFloat(VelocityZHash, velocityZ, _dampingTime, Time.deltaTime);
+
+                // Rotate character to move direction
+                if (localVelocity != Vector3.zero)
+                {
+                    Quaternion targetRotation = Quaternion.LookRotation(_agent.velocity.normalized);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * _rotationSpeed);
+                }
+            }
         }
         else if (!isPerformingAction)
         {
@@ -215,7 +273,7 @@ public class AnimatorKeyboardController : MonoBehaviour
 
     private void ResetVelocity()
     {
-        _animator.SetFloat(VelocityXHash, 0f);
-        _animator.SetFloat(VelocityZHash, 0f);
+        _animator.SetFloat(VelocityXHash, 0f, _dampingTime, Time.deltaTime);
+        _animator.SetFloat(VelocityZHash, 0f, _dampingTime, Time.deltaTime);
     }
 }

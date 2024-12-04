@@ -2,12 +2,19 @@ using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
 using UnityEngine.Animations.Rigging;
+using System.Collections.Generic;
 
 public class AnimatorAIController : MonoBehaviour
 {
     [SerializeField] private EmotionController emotionController;
     [SerializeField] private Rig headRig;
     [SerializeField] private float clapDuration = 5.0f;
+    
+    // Added variables for animation smoothing
+    [SerializeField] private Transform destination;
+    private float _rotationSpeed = 5f;
+    private float _strafeSpeed = 0.35f;
+    private float _dampingTime = 0.1f;
 
     private Animator _animator;
     private NavMeshAgent _agent;
@@ -31,8 +38,8 @@ public class AnimatorAIController : MonoBehaviour
     private const string LayingDownStateName = "Laying Down";
     private const string ClappingStateName = "Clapping";
     private const string DancingStateName = "Dancing";
-    private const string FlipStateName = "Flip"; // Added FlipStateName
-    
+    private const string FlipStateName = "Flip";
+
     private enum EmotionType
     {
         Happy,
@@ -57,6 +64,22 @@ public class AnimatorAIController : MonoBehaviour
         {
             headRig = GetComponentInChildren<Rig>();
         }
+
+        // Disable automatic rotation of NavMeshAgent
+        if (_agent != null)
+        {
+            _agent.updateRotation = false;
+        }
+
+        // Assign destination if not set
+        if (destination == null)
+        {
+            NavMeshAIController aiController = GetComponent<NavMeshAIController>();
+            if (aiController != null)
+            {
+                destination = aiController.destination;
+            }
+        }
     }
 
     void Update()
@@ -65,16 +88,9 @@ public class AnimatorAIController : MonoBehaviour
         _isPerformingAction = !_currentState.IsName(BlendTreeStateName);
 
         HandleOngoingEmotion();
+        UpdateBlendTree(_isPerformingAction);
         HandleLayDownCompletion();
-
-        if (!_isPerformingAction)
-        {
-            UpdateBlendTree();
-        }
-        else
-        {
-            ResetVelocity();
-        }
+        ControlNavMeshAgent(_isPerformingAction);
     }
 
     // Public emotion functions to be called by PetManager
@@ -220,23 +236,66 @@ public class AnimatorAIController : MonoBehaviour
         }
     }
 
-    private void UpdateBlendTree()
+    private void UpdateBlendTree(bool isPerformingAction)
     {
-        if (_agent != null && !_agent.isStopped && _agent.remainingDistance > _agent.stoppingDistance)
+        float velocityThreshold = 0.05f; // Threshold to prevent twitching
+
+        if (_agent != null && !_agent.isStopped && _agent.remainingDistance > _agent.stoppingDistance && !isPerformingAction)
         {
             Vector3 localVelocity = transform.InverseTransformDirection(_agent.velocity);
-            _animator.SetFloat(VelocityXHash, localVelocity.x);
-            _animator.SetFloat(VelocityZHash, localVelocity.z);
+
+            Vector3 directionToTarget = destination.position - transform.position;
+            float angleToTarget = Vector3.Angle(transform.forward, directionToTarget);
+
+            float angleThreshold = 100f; // Angle to determine if target is behind
+
+            if (angleToTarget > angleThreshold)
+            {
+                // Strafe to turn towards the target
+                Vector3 cross = Vector3.Cross(transform.forward, directionToTarget.normalized);
+                float direction = cross.y > 0 ? 1f : -1f; // 1 for right, -1 for left
+
+                _animator.SetFloat(VelocityXHash, direction * _strafeSpeed, _dampingTime, Time.deltaTime);
+                _animator.SetFloat(VelocityZHash, 0f, _dampingTime, Time.deltaTime);
+
+                // Rotate the character
+                Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * _rotationSpeed);
+            }
+            else
+            {
+                // Apply threshold to prevent twitching
+                float velocityX = Mathf.Abs(localVelocity.x) > velocityThreshold ? localVelocity.x : 0f;
+                float velocityZ = Mathf.Abs(localVelocity.z) > velocityThreshold ? localVelocity.z : 0f;
+
+                _animator.SetFloat(VelocityXHash, velocityX, _dampingTime, Time.deltaTime);
+                _animator.SetFloat(VelocityZHash, velocityZ, _dampingTime, Time.deltaTime);
+
+                // Rotate character to move direction
+                if (localVelocity != Vector3.zero)
+                {
+                    Quaternion targetRotation = Quaternion.LookRotation(_agent.velocity.normalized);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * _rotationSpeed);
+                }
+            }
         }
-        else
+        else if (!isPerformingAction)
         {
             ResetVelocity();
         }
     }
 
+    private void ControlNavMeshAgent(bool isPerformingAction)
+    {
+        if (_agent != null)
+        {
+            _agent.isStopped = isPerformingAction;
+        }
+    }
+
     private void ResetVelocity()
     {
-        _animator.SetFloat(VelocityXHash, 0f);
-        _animator.SetFloat(VelocityZHash, 0f);
+        _animator.SetFloat(VelocityXHash, 0f, _dampingTime, Time.deltaTime);
+        _animator.SetFloat(VelocityZHash, 0f, _dampingTime, Time.deltaTime);
     }
 }

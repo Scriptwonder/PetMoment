@@ -6,10 +6,13 @@ public class NavMeshAIController : MonoBehaviour
     public Transform destination;
 
     [SerializeField]
-    private float stoppingOffset = 5.0f;
+    private float stoppingOffset = 0.5f; // Adjusted to prevent twitching near the target
 
     private NavMeshAgent _agent;
     private Animator _animator;
+
+    // Animator parameter hash
+    private static readonly int IsNearTargetHash = Animator.StringToHash("IsNearTarget");
 
     // Animator state names
     private const string FlipStateName = "Flip";
@@ -24,6 +27,12 @@ public class NavMeshAIController : MonoBehaviour
     {
         _agent = GetComponent<NavMeshAgent>();
         _animator = GetComponent<Animator>();
+
+        // Disable automatic rotation
+        if (_agent != null)
+        {
+            _agent.updateRotation = false;
+        }
     }
 
     void Update()
@@ -38,9 +47,15 @@ public class NavMeshAIController : MonoBehaviour
         bool isPerformingAction = IsAnyActionActive();
 
         // Determine whether to stop the agent
-        if (isPerformingAction || IsNearDestination())
+        bool nearDestination = IsNearDestination();
+
+        // Update animator parameter
+        _animator.SetBool(IsNearTargetHash, nearDestination);
+
+        if (isPerformingAction || nearDestination)
         {
             _agent.isStopped = true; // Stop NavMeshAgent
+            _agent.velocity = Vector3.zero; // Ensure velocity is zero
         }
         else
         {
@@ -53,13 +68,15 @@ public class NavMeshAIController : MonoBehaviour
     /// </summary>
     private bool IsAnyActionActive()
     {
-        return _animator.GetCurrentAnimatorStateInfo(0).IsName(FlipStateName) ||
-               _animator.GetCurrentAnimatorStateInfo(0).IsName(LayingDownStateName) ||
-               _animator.GetCurrentAnimatorStateInfo(0).IsName(GettingUpStateName) ||
-               _animator.GetCurrentAnimatorStateInfo(0).IsName(SurprisedStateName) ||
-               _animator.GetCurrentAnimatorStateInfo(0).IsName(AngryStateName) ||
-               _animator.GetCurrentAnimatorStateInfo(0).IsName(DancingStateName) ||
-               _animator.GetCurrentAnimatorStateInfo(0).IsName(ClappingStateName);
+        AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
+
+        return stateInfo.IsName(FlipStateName) ||
+               stateInfo.IsName(LayingDownStateName) ||
+               stateInfo.IsName(GettingUpStateName) ||
+               stateInfo.IsName(SurprisedStateName) ||
+               stateInfo.IsName(AngryStateName) ||
+               stateInfo.IsName(DancingStateName) ||
+               stateInfo.IsName(ClappingStateName);
     }
 
     /// <summary>
