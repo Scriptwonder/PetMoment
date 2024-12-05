@@ -32,18 +32,18 @@ public class AssignAimTarget : MonoBehaviour
         }
         else
         {
-            Debug.LogError("HeadAimConstraint is not assigned in the inspector.");
+            Debug.LogError("HeadAim is NOT assigned in the inspector.");
         }
         
         // Assign camera to ChestAim
         if (chestAimConstraint != null)
         {
             AssignSourceToConstraint(chestAimConstraint, cameraTransform);
-            Debug.Log("ChestAimConstraint: Assigned source to " + cameraTransform.name);
+            Debug.Log("Main Camera assigned - ChestAim");
         }
         else
         {
-            Debug.LogError("Main Camera assigned - ChestAim");
+            Debug.LogError("ChestAim is NOT assigned in the inspector.");
         }
     }
 
