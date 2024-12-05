@@ -11,6 +11,7 @@ public class AnimatorAIController : MonoBehaviour
     [SerializeField] private float clapDuration = 5.0f;
     
     // Added variables for animation smoothing
+    //[SerializeField] private Transform destination;
     [SerializeField] private Transform destination;
     private float _rotationSpeed = 5f;
     private float _strafeSpeed = 0.35f;
@@ -73,18 +74,35 @@ public class AnimatorAIController : MonoBehaviour
         }
 
         // Assign destination if not set
-        if (destination == null)
+        /*if (destination == null)
         {
             NavMeshAIController aiController = GetComponent<NavMeshAIController>();
             if (aiController != null)
             {
                 destination = aiController.destination;
             }
+        }*/
+
+        StartCoroutine(AssignDestination());
+    }
+    
+    private IEnumerator AssignDestination()
+    {
+        // Wait until the main camera is available
+        while (Camera.main == null)
+        {
+            yield return null; // Wait for the next frame
         }
+
+        // Assign the main camera's transform to destination
+        destination = Camera.main.transform;
+        Debug.Log("Main Camera assigned - AnimatorAIController");
     }
 
     void Update()
     {
+        if (destination == null) return;
+        
         _currentState = _animator.GetCurrentAnimatorStateInfo(0);
         _isPerformingAction = !_currentState.IsName(BlendTreeStateName);
 

@@ -91,7 +91,7 @@ public class AnimatorKeyboardController : MonoBehaviour
             NavMeshAIController aiController = GetComponent<NavMeshAIController>();
             if (aiController != null)
             {
-                destination = aiController.destination;
+                destination = aiController.debugDestination;
             }
         }
     }

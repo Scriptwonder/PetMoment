@@ -1,12 +1,15 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Serialization;
 
 public class NavMeshAIController : MonoBehaviour
 {
-    public Transform destination;
+    public Transform debugDestination; // only used in AnimatorKeyboardController.cs for debug
+    [SerializeField] private Transform destination;
 
-    [SerializeField]
-    private float stoppingOffset = 0.5f; // Adjusted to prevent twitching near the target
+    //[SerializeField]
+    private float stoppingOffset = 0.5f;
 
     private NavMeshAgent _agent;
     private Animator _animator;
@@ -33,6 +36,19 @@ public class NavMeshAIController : MonoBehaviour
         {
             _agent.updateRotation = false;
         }
+
+        StartCoroutine(AssignHeadAimTarget());
+    }
+
+    private IEnumerator AssignHeadAimTarget()
+    {
+        while (Camera.main == null)
+        {
+            yield return null;
+        }
+        
+        destination = Camera.main.transform;
+        Debug.Log("Main Camera assigned - NavMeshAIController");
     }
 
     void Update()
